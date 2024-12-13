@@ -54,28 +54,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          
-          echo "Checking token permissions..."
-
-          # Make a request to list repositories (this will give us an idea of the token's access)
-          response=$(curl -s -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/user/repos)
-      
-          # Check if the response includes a list of repositories (i.e., permissions granted)
-          if echo "$response" | jq -e '. | length > 0' > /dev/null; then
-          echo "Token has access to repositories."
-          else
-          echo "Token does not have access to repositories or failed to authenticate."
-          fi
-      
-          # Example of trying to access a specific repository's permissions (adjust this for your case)
-          repo_response=$(curl -s -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/repos/${{ github.repository }})
-          if echo "$repo_response" | jq -e '.id' > /dev/null; then
-          echo "Token has access to this repository."
-          else
-          echo "Token does not have access to this repository."
-          fi
-          
-      
           for row in $(jq -rc '.[] | @base64' deploy-versions.json); do
             _jq() {
               echo ${row} | base64 --decode | jq -r ${1}
@@ -83,7 +61,7 @@ jobs:
             key=$(echo $(_jq '.key'));
             tag=$(echo $(_jq '.tag'));
 
-            git clone --depth 1 -b "$tag" $RepoUrl "$BuildDir/$key"
+            git clone --depth 1 -b "$tag" https://$GITHUB_TOKEN@github.com/$RepoUrl "$BuildDir/$key"
 
             cp versions.json "$BuildDir/$key/src/.vuepress/versions.json";
           done
