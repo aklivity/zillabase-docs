@@ -61,7 +61,7 @@ jobs:
             key=$(echo $(_jq '.key'));
             tag=$(echo $(_jq '.tag'));
 
-            git clone --depth 1 -b "$tag" https://$GITHUB_TOKEN@github.com/$RepoUrl "$BuildDir/$key"
+            git clone --depth 1 -b "$tag" https://$GITHUB_TOKEN@${repo_url} "$BuildDir/$key"
 
             cp versions.json "$BuildDir/$key/src/.vuepress/versions.json";
           done
