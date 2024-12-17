@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   deployments: write
   pages: write
   id-token: write
@@ -48,6 +48,10 @@ jobs:
 
       - name: build versions.json
         run: jq -rc '. + input' "src/.vuepress/versions.json" deploy-versions.json > versions.json;
+
+      - name: Verify Repository Access
+        run: |
+          curl -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/aklivity/zillabase-docs  
 
       - if: ${{ steps.dist-cache.outputs.cache-hit != 'true' }}
         name: Pull versions
