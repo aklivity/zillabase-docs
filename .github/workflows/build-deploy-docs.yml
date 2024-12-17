@@ -62,6 +62,9 @@ jobs:
             tag=$(echo $(_jq '.tag'));
 
             git clone --depth 1 -b "$tag" https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/aklivity/zillabase-docs.git "$BuildDir/$key"
+          
+            echo "Listing contents of BuildDir/$key:"
+            ls -la "$BuildDir/$key"
 
             cp versions.json "$BuildDir/$key/src/.vuepress/versions.json";
           done
