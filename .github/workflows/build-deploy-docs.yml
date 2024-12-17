@@ -5,6 +5,8 @@ on:
     branches: [develop, feature/workflow]
   workflow_dispatch:
 
+permissions: write-all
+
 concurrency:
   group: "pages"
   cancel-in-progress: true
