@@ -49,7 +49,8 @@ jobs:
       - name: build versions.json
         run: jq -rc '. + input' "src/.vuepress/versions.json" deploy-versions.json > versions.json;
 
-      - name: Pull versions
+      - if: ${{ steps.dist-cache.outputs.cache-hit != 'true' }}
+        name: Pull versions
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -61,9 +62,6 @@ jobs:
             tag=$(echo $(_jq '.tag'));
 
             git clone --depth 1 -b "$tag" https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/aklivity/zillabase-docs.git "$BuildDir/$key"
-          
-            echo "Listing contents of BuildDir/$key:"
-            ls -la "$BuildDir/$key"
 
             cp versions.json "$BuildDir/$key/src/.vuepress/versions.json";
           done
