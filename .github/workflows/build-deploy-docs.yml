@@ -49,8 +49,7 @@ jobs:
       - name: build versions.json
         run: jq -rc '. + input' "src/.vuepress/versions.json" deploy-versions.json > versions.json;
 
-      - if: ${{ steps.dist-cache.outputs.cache-hit != 'true' }}
-        name: Pull versions
+      - name: Pull versions
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
