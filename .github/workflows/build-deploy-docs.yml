@@ -37,7 +37,7 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 8
+          version: 9
           run_install: true
 
       - name: Setup Node.js
@@ -72,38 +72,79 @@ jobs:
           NODE_OPTIONS: "--max_old_space_size=4096"
         run: |
           wrkdir=$(pwd);
+          echo "Current working directory: $wrkdir"
+
+          # Iterate through each version defined in deploy-versions.json
           for row in $(jq -rc '.[] | @base64' deploy-versions.json); do
             _jq() {
+              echo "Decoding row: ${row}"
               echo ${row} | base64 --decode | jq -r ${1}
             }
-            key=$(echo $(_jq '.key'));
 
+            # Extract the version key
+            key=$(echo $(_jq '.key'));
+            echo "Processing version with key: $key"
+
+            # Set environment variables for dist directory and version key
             export DIST_DIR="$wrkdir/$DistDir";
             export SITE_VERSION_KEY="$key";
+            echo "Setting DIST_DIR: $DIST_DIR"
+            echo "Setting SITE_VERSION_KEY: $SITE_VERSION_KEY"
+
+            # Create the directory for the version
             mkdir -p "$DIST_DIR";
+            echo "Created directory: $DIST_DIR"
 
+            # Navigate to the specific version's source directory
             cd "$BuildDir/$key";
-            pnpm install && pnpm build;
+            echo "Navigating to build directory for version $key: $BuildDir/$key"
 
+            # Install dependencies and build the project for the current version
+            echo "Running pnpm install for version $key"
+            pnpm install;
+
+            echo "Running pnpm build for version $key"
+            pnpm build;
+
+            # Return to the original working directory after building the version
             cd $wrkdir;
+            echo "Returned to original working directory: $wrkdir"
           done
+      
 
       - name: Build VuePress site
         env:
           NODE_OPTIONS: "--max_old_space_size=4096"
           SITE_VERSION_KEY: next
         run: |
+          # Copy versions.json to the VuePress directory
+          echo "Copying versions.json to src/.vuepress/versions.json"
           cp versions.json "src/.vuepress/versions.json";
 
+          # Set the DIST_DIR environment variable for the build
+          echo "Setting DIST_DIR to $(pwd)/$DistDir"
           export DIST_DIR="$(pwd)/$DistDir";
-          pnpm build
+
+          # Build the VuePress site using pnpm
+          echo "Running pnpm build in the current directory"
+          pnpm build;
 
       - if: ${{ steps.dist-cache.outputs.cache-hit != 'true' }}
         name: Save Docs
+        run: |
+          # Ensure that cache is not hit and we are saving the docs
+          echo "Cache miss detected. Saving docs..."
+
+          # Log the directory and key for caching
+          echo "Using cache key: ${{ env.DistDir }}-${{ hashFiles('deploy-versions.json') }}"
+
+          # Save the docs directory to cache
+          echo "Saving ${{ env.DistDir }} to the cache"
         uses: actions/cache/save@v4
         with:
           path: ${{ env.DistDir }}
           key: ${{ env.DistDir }}-${{ hashFiles('deploy-versions.json') }}
+
 
       - name: Check Dist Directory
         run: ls -la ${{ env.DistDir }}
