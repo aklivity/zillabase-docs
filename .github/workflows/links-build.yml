@@ -27,6 +27,9 @@ jobs:
         run: |
           pnpm build
 
+      - name: Verify link-checker installation
+        run: pnpm exec which link-checker
+
       - name: Anchor tag Checker
         run: pnpm link-checker
 
