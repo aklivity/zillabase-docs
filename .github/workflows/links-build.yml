@@ -1,0 +1,39 @@
+name: Links check build
+
+on:
+  pull_request:
+
+jobs:
+  linkChecker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+          run_install: true
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Build VuePress site
+        env:
+          NODE_OPTIONS: "--max_old_space_size=4096"
+        run: |
+          pnpm build
+
+      - name: Anchor tag Checker
+        run: pnpm link-checker
+
+      - name: Link Checker
+        uses: lycheeverse/lychee-action@v1.8.0
+        with:
+          fail: true
+          args: --exclude-mail --base="src/.vuepress/dist" src/.vuepress/dist
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
