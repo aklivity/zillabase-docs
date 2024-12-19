@@ -4,7 +4,7 @@ import { base, siteBase, dest, versionKey } from "./env.js";
 import theme from "./theme.js";
 
 export default defineUserConfig({
-  base: "/",
+  base: `/${base}/`,
   dest,
 
   locales: {
