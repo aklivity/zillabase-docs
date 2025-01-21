@@ -1,5 +1,0 @@
-
-User-agent:*
-Disallow:
-
-Sitemap: https://docs.aklivity.io/zillabase-docs/next/sitemap.xml
