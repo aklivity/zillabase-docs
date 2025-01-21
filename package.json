@@ -1,6 +1,6 @@
 {
   "name": "zillabase-docs",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "The official documentation for the aklivity/zillabase open-source project",
   "author": "aklivity.io",
   "license": "ISC",
@@ -13,13 +13,36 @@
     "build": "vuepress-vite build src",
     "clean-dev": "vuepress-vite dev src --clean-cache",
     "dev": "vuepress-vite dev src",
-    "update-package": "pnpm add -g pnpm && pnpm dlx vp-update"
+    "update-package": "pnpm add -g pnpm && pnpm dlx vp-update",
+    "lint": "markdownlint-cli2 \"**/*.md\" \"#node_modules\" \"#.config\" \"#.check-schema\"",
+    "lint-fix": "markdownlint-cli2 --fix \"**/*.md\" \"#node_modules\" \"#.config\" \"#.check-schema\"",
+    "link-checker": "pnpm build && link-checker src/.vuepress/dist"
   },
   "devDependencies": {
     "@vuepress/bundler-vite": "2.0.0-rc.18",
+    "@vuepress/plugin-redirect": "2.0.0-rc.61",
+    "@vuepress/plugin-register-components": "2.0.0-rc.54",
+    "@vuepress/plugin-theme-data": "2.0.0-rc.61",
+    "@vuepress/plugin-google-analytics": "2.0.0-rc.54",
+    "@vuepress/plugin-docsearch": "2.0.0-rc.56",
+    "@vuepress/plugin-markdown-hint": "2.0.0-rc.54",
+    "@vuepress/plugin-markdown-tab": "2.0.0-rc.54",
+    "@vuepress/plugin-shiki": "2.0.0-rc.54",
+    "markdownlint-cli2": "^0.17.1",
     "sass-embedded": "^1.79.5",
+    "sass-embedded-darwin-arm64": "^1.79.5",
     "vue": "^3.5.12",
     "vuepress": "2.0.0-rc.18",
-    "vuepress-theme-hope": "2.0.0-rc.59"
+    "vuepress-plugin-search-pro": "2.0.0-rc.59",
+    "vuepress-theme-hope": "2.0.0-rc.59",
+    "mermaid": "^11.4.1"
+  },
+  "dependencies": {
+    "@scalar/api-reference": "^1.25.72"
+  },
+  "pnpm": {
+    "overrides": {
+      "rollup": "npm:@rollup/wasm-node"
+    }
   }
 }

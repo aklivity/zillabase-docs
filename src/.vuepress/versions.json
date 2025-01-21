@@ -1,0 +1,4 @@
+[
+    { "text": "Changelog", "icon": "fas fa-tag", "link": "https://github.com/aklivity/zillabase/releases" },
+    { "text": "@next", "icon": "fas fa-circle-right", "key": "next" }
+]

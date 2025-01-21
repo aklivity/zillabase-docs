@@ -1,205 +1,391 @@
 // Dark theme settings
 html[data-theme="dark"] #app {
-    --border-color: #0e5c49;
-    .vp-sidebar {
-      scrollbar-color: #274b41 #333;
-    }
-    .vp-footer img.logo {
-      content: url("/footer-logo-white.webp");
-    }
+  --border-color: #0e5c49;
+  .vp-sidebar {
+    scrollbar-color: #274b41 #333;
   }
-  
-  // Light theme settings
-  html[data-theme="light"] #app {
-    --border-color: #55877a;
-  
-    .vp-sidebar {
-      scrollbar-color: #a9d4c9 #e4e6e5;
-    }
-    .vp-footer img.logo {
-      content: url("/footer-logo.webp");
-    }
-  }
-  
-  // make bash code blocks have $ prefix
-  div.language-bash pre {
-      padding-left: 0.8rem;
-      code:before {
-        content: "$ ";
-        font-weight: bold;
-        margin-left: -1rem;
-      }
-  }
-  div.language-output {
-    button.vp-copy-code-button {
-      display: none;
-    }
-  }
-  
-  // remove table borders
-  table.no-boarder {
-    td,
-    th,
-    tr {
-      padding: 0.5em;
-      border: none !important;
-      background: none !important;
-    }
-  }
-  // remove table header
-  table.no-head {
-    thead {
-      display: none !important;
-    }
-  }
-  
-  // remove extra list margins
-  ul li p {
-    margin: 0px;
-  }
-  
-  // don't hyphenate word breaks
-  p {
-    -webkit-hyphens: none !important;
-    -moz-hyphens: none !important;
-    -ms-hyphens: none !important;
-    hyphens: none !important;
-  }
-  
-  // Increase H tag headers font weight
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    font-weight: 800;
-    a {
-      font-weight: 800;
-    }
-  }
-  
-  // Header
-  // full width search
-  .vp-navbar-center {
-    div {
-      width: 100%;
-      button.DocSearch {
-        width: 100%;
-      }
-    }
-  }
-  // Footer
   .vp-footer img.logo {
-    padding-right: 25px;
+    content: url("/footer-logo-white.webp");
   }
-  
-  // === Improve sidebar visual hierarchy ===
-  // size only first level headers
-  .vp-sidebar-group:not(.vp-sidebar-group .vp-sidebar-group) {
-    margin-left: 1rem;
-    & > .vp-sidebar-header {
-      border-bottom: solid thin var(--border-color);
-      border-radius: 0;
-      .vp-sidebar-title {
-        font-size: 1.3em;
-        font-weight: 600;
-      }
-    }
+}
+
+// Light theme settings
+html[data-theme="light"] #app {
+  --border-color: #55877a;
+
+  .vp-sidebar {
+    scrollbar-color: #a9d4c9 #e4e6e5;
   }
-  
-  // TODO: This is a hack to be removed along with the corresponding sidebar elements
-  // when the bug (https://github.com/vuepress-theme-hope/vuepress-theme-hope/issues/4286) is fixed
-  .vp-sidebar-header:has([aria-label^="-hidden-"]) {
+  .vp-footer img.logo {
+    content: url("/footer-logo.webp");
+  }
+}
+
+// make bash code blocks have $ prefix
+div.language-bash pre {
+  padding-left: 0.8rem;
+  code:before {
+    content: "$ ";
+    font-weight: bold;
+    margin-left: -1rem;
+  }
+}
+div.language-output {
+  button.vp-copy-code-button {
+    display: none;
+  }
+}
+
+// remove table borders
+table.no-boarder {
+  td,
+  th,
+  tr {
+    padding: 0.5em;
+    border: none !important;
+    background: none !important;
+  }
+}
+// remove table header
+table.no-head {
+  thead {
     display: none !important;
   }
-  
-  ::-webkit-scrollbar-thumb {
-    background: var(--code-highlight-bg-color);
+}
+
+// remove extra list margins
+ul li p {
+  margin: 0px;
+}
+
+// don't hyphenate word breaks
+p {
+  -webkit-hyphens: none !important;
+  -moz-hyphens: none !important;
+  -ms-hyphens: none !important;
+  hyphens: none !important;
+}
+
+// Increase H tag headers font weight
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 800;
+  a {
+    font-weight: 800;
   }
-  
-  .vp-sidebar {
-    .vp-sidebar-links {
+}
+
+// Header
+// full width search
+.vp-navbar-center {
+  div {
+    width: 100%;
+    button.DocSearch {
+      width: 100%;
+    }
+  }
+}
+// Footer
+.vp-footer img.logo {
+  padding-right: 25px;
+}
+
+// === Improve sidebar visual hierarchy ===
+// size only first level headers
+.vp-sidebar-group:not(.vp-sidebar-group .vp-sidebar-group) {
+  margin-left: 1rem;
+  & > .vp-sidebar-header {
+    border-bottom: solid thin var(--border-color);
+    border-radius: 0;
+    .vp-sidebar-title {
+      font-size: 1.1em;
+      font-weight: 600;
+    }
+  }
+}
+
+// TODO: This is a hack to be removed along with the corresponding sidebar elements
+// when the bug (https://github.com/vuepress-theme-hope/vuepress-theme-hope/issues/4286) is fixed
+.vp-sidebar-header:has([aria-label^="-hidden-"]) {
+  display: none !important;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--code-highlight-bg-color);
+}
+
+.vp-sidebar {
+  .vp-sidebar-links {
+    margin-left: 0rem;
+    .vp-sidebar-group > .vp-sidebar-header {
+      padding: 0.25rem 0.5rem;
       margin-left: 0rem;
-      .vp-sidebar-group > .vp-sidebar-header {
-        padding: 0.25rem 0rem;
+      // font-weight: 600;
+    }
+    // .vp-sidebar-title {
+    //   font-weight: 500;
+    // }
+    .vp-sidebar-links {
+      .vp-sidebar-link {
+        padding-right: 0rem !important;
         margin-left: 0rem;
-        font-weight: 600;
-      }
-      .vp-sidebar-title {
-        font-weight: 500;
       }
       .vp-sidebar-links {
+        .vp-sidebar-group {
+          padding: 0.25rem 0.5rem;
+        }
         .vp-sidebar-link {
-          padding-right: 0rem !important;
-          margin-left: 0rem;
-        }
-        .vp-sidebar-links {
-          .vp-sidebar-group {
-            padding: 0.25rem 0.5rem;
-          }
-          .vp-sidebar-link {
-            padding: 0.25rem 0.5rem;
-          }
+          padding: 0.25rem 0.5rem;
         }
       }
     }
   }
-  
-  // Zilla plus icon indicator
-  .vp-sidebar-link,
-  .vp-sidebar-header {
-    display: flex !important;
-    flex-direction: row;
-    span.icon {
-      order: 2;
-      margin-left: auto;
-    }
-  }
-  
-  // Zilla plus container styles
-  .zilla-plus-badge.hint-container.info {
-    border-color: #0e5c49;
-    background: var(--theme-color);
-    padding: 0;
-    a {
-      background-color: var(--theme-color);
-      cursor: pointer;
-      text-decoration: none !important;
-      color: white;
-      font-size: 18px;
-      text-align: center;
-      border-radius: 5px;
-      display: inline-block;
-      padding: 0.5em;
-      border-radius: 5px;
-      box-sizing: border-box;
-      width: 100%;
-      sup {
-        span.icon {
-          color: white;
-        }
+}
+
+.vp-sidebar-group .vp-sidebar-group .vp-sidebar-links {
+  padding-left: 0.5rem;
+}
+
+// Zilla plus icon indicator
+// .vp-sidebar-link,
+// .vp-sidebar-header {
+//   display: flex !important;
+//   flex-direction: row;
+//   span.icon {
+//     order: 2;
+//     margin-left: auto;
+//   }
+// }
+
+.vp-sidebar > .vp-sidebar-links > li > .vp-sidebar-link {
+  font-size: 1rem;
+}
+
+// Zilla plus container styles
+.zilla-plus-badge.hint-container.info {
+  border-color: #0e5c49;
+  background: var(--theme-color);
+  padding: 0;
+  a {
+    background-color: var(--theme-color);
+    cursor: pointer;
+    text-decoration: none !important;
+    color: white;
+    font-size: 18px;
+    text-align: center;
+    border-radius: 5px;
+    display: inline-block;
+    padding: 0.5em;
+    border-radius: 5px;
+    box-sizing: border-box;
+    width: 100%;
+    sup {
+      span.icon {
+        color: white;
       }
     }
-    .external-link-icon {
-      display: none;
-    }
   }
-  
-  // set supper plus icons to the theme color
-  sup {
-    span.icon {
-      color: var(--theme-color);
-    }
+  .external-link-icon {
+    display: none;
   }
-  
-  // === ICONS ===
-  .aky-zilla-plus {
-    &::after {
-      content: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 94 94"><defs><style>.cls-1{fill:url(%23linear-gradient);}</style><linearGradient id="linear-gradient" x1="0.5" y1="47.5" x2="94.5" y2="47.5" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="%235a7cd9"/><stop offset="0.28" stop-color="%234799c9"/><stop offset="0.76" stop-color="%2329c4b0"/><stop offset="1" stop-color="%231ed5a7"/></linearGradient></defs><title>zilla-plus-icon</title><g id="Rounded_Plus" data-name="Rounded Plus"><path class="cls-1" d="M94.5,35.83V59.17a4.23,4.23,0,0,1-4.23,4.23H63.4V90.27a4.23,4.23,0,0,1-4.23,4.23H35.83a4.23,4.23,0,0,1-4.23-4.23V63.4H4.73A4.23,4.23,0,0,1,.5,59.17V35.83A4.23,4.23,0,0,1,4.73,31.6H31.6V4.73A4.23,4.23,0,0,1,35.83.5H59.17A4.23,4.23,0,0,1,63.4,4.73V31.6H90.27A4.23,4.23,0,0,1,94.5,35.83Z" transform="translate(-0.5 -0.5)"/></g></svg>');
-      display: inline-block;
-      height: 0.8em;
-      width: 0.8em;
-    }
+}
+
+// set supper plus icons to the theme color
+sup {
+  span.icon {
+    color: var(--theme-color);
   }
-  
+}
+
+// === ICONS ===
+.aky-zilla-plus {
+  &::after {
+    content: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 94 94"><defs><style>.cls-1{fill:url(%23linear-gradient);}</style><linearGradient id="linear-gradient" x1="0.5" y1="47.5" x2="94.5" y2="47.5" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="%235a7cd9"/><stop offset="0.28" stop-color="%234799c9"/><stop offset="0.76" stop-color="%2329c4b0"/><stop offset="1" stop-color="%231ed5a7"/></linearGradient></defs><title>zilla-plus-icon</title><g id="Rounded_Plus" data-name="Rounded Plus"><path class="cls-1" d="M94.5,35.83V59.17a4.23,4.23,0,0,1-4.23,4.23H63.4V90.27a4.23,4.23,0,0,1-4.23,4.23H35.83a4.23,4.23,0,0,1-4.23-4.23V63.4H4.73A4.23,4.23,0,0,1,.5,59.17V35.83A4.23,4.23,0,0,1,4.73,31.6H31.6V4.73A4.23,4.23,0,0,1,35.83.5H59.17A4.23,4.23,0,0,1,63.4,4.73V31.6H90.27A4.23,4.23,0,0,1,94.5,35.83Z" transform="translate(-0.5 -0.5)"/></g></svg>');
+    display: inline-block;
+    height: 0.8em;
+    width: 0.8em;
+  }
+}
+
+.cards {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.vp-card {
+  flex: 0 1 calc((100% - 8rem) / 2); /* Adjust the divisor for number of cards per row */
+  display: flex !important;
+  flex-direction: column;
+  align-items: start;
+  gap: 1rem;
+  background: none !important;
+  box-shadow: none !important;
+
+  border-radius: 1rem;
+  border-style: solid;
+  border-width: 2px;
+
+  transition: all;
+  transition-duration: 200ms;
+}
+
+[data-theme="light"] .vp-card {
+  border-color: #38b7a7 !important;
+}
+
+[data-theme="dark"] .vp-card {
+  border-color: #1b343f !important;
+}
+
+[data-theme="light"] .vp-card:hover {
+  border-color: #1b343f !important;
+}
+
+[data-theme="dark"] .vp-card:hover {
+  border-color: #38b7a7 !important;
+}
+
+@media (max-width: 480px) {
+  .vp-card {
+    flex: 0 1 100%; /* Single column on mobile */
+  }
+}
+
+.vp-card-logo {
+  height: 1.5rem;
+  width: auto;
+  border-radius: 0% !important;
+}
+
+.vp-card hr {
+  display: none !important;
+}
+
+// .vp-navbar:not(.auto-hide) {
+//   flex-wrap: wrap;
+//   height: unset !important;
+// }
+
+// .vp-navbar:not(.auto-hide) .vp-navbar-start,
+// .vp-navbar:not(.auto-hide) .vp-navbar-center,
+// .vp-navbar:not(.auto-hide) .vp-navbar-end {
+//   flex: 0 0 50%;
+//   box-sizing: border-box;
+// }
+
+// .vp-navbar:not(.auto-hide) .vp-navbar-center {
+//   display: flex;
+//   justify-content: end;
+// }
+
+// .vp-navbar-center div {
+//   width: unset !important;
+// }
+
+// .vp-navbar:not(.auto-hide) .vp-navbar-end {
+//   padding-top: 0.5rem;
+//   justify-content: start !important;
+// }
+
+// @media (min-width: 719px) {
+//   .vp-sidebar {
+//     padding-top: 2rem;
+//   }
+
+//   #main-content {
+//     padding-top: 6.5rem;
+//   }
+// }
+
+.vp-navbar {
+  padding-left: max(calc(var(--sidebar-space) - var(--sidebar-width)), 0.5rem);
+  padding-right: max(calc(var(--sidebar-space) - var(--sidebar-width)), 0.5rem);
+}
+
+.theme-hope-content {
+  text-align: left !important;
+}
+
+.theme-hope-content:not(.custom) > p,
+.theme-hope-content:not(.custom) > ul p,
+.theme-hope-content:not(.custom) > ol p {
+  text-align: left !important;
+}
+
+.vp-sidebar img.icon {
+  height: 1.25rem;
+  width: 1.25rem;
+  margin-inline-end: 0.5rem;
+}
+
+.vp-sidebar-link img.icon {
+  width: 1.1rem;
+  padding: 5px;
+  margin-bottom: -7px;
+}
+
+[data-theme="light"] .vp-sidebar-link:hover:not(.active) {
+  color: black;
+
+  .icon {
+    filter: grayscale(1) brightness(0);
+  }
+}
+
+[data-theme="dark"] .vp-sidebar-link:hover:not(.active) {
+  color: white;
+
+  .icon {
+    filter: grayscale(1) brightness(10);
+    outline-width: 0px;
+  }
+}
+
+.vp-sidebar-link img.icon:hover {
+  color: #32a4d6;
+}
+
+.vp-sidebar-group:not(.vp-sidebar-group .vp-sidebar-group) {
+  margin-left: 0.5rem;
+}
+
+#main-content:has(.scalar-app) .theme-hope-content {
+  padding-left: max(
+    calc(var(--sidebar-space) - var(--sidebar-width)),
+    0.5rem
+  ) !important;
+  padding-right: max(
+    calc(var(--sidebar-space) - var(--sidebar-width)),
+    0.5rem
+  ) !important;
+}
+
+:root {
+  --hint-font-size: 1rem !important;
+}
+
+.hint-container.details p {
+  font-size: 1rem !important;
+}
+
+.hint-container.details summary {
+  font-weight: 600;
+}
+
+@media (min-width: 960px) {
+  .search-pro-button {
+    width: 100%;
+  }
+}
+
+.search-pro-placeholder {
+  text-align: left;
+}
+
+.search-pro-key-hints {
+  text-align: right;
+}

@@ -1,0 +1,180 @@
+name: Site versioned build & deploy
+
+on:
+  push:
+    branches: [develop, feature/workflow]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  deployments: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+env:
+  DistDir: dist
+  BuildDir: build
+  RepoUrl: ${{github.server_url}}/${{github.repository}}.git
+  SITE_BASE: ${{ vars.SITE_BASE }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Restore cached Docs
+        id: dist-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ env.DistDir }}
+          key: ${{ env.DistDir }}-${{ hashFiles('deploy-versions.json') }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+          run_install: true
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: build versions.json
+        run: jq -rc '. + input' "src/.vuepress/versions.json" deploy-versions.json > versions.json;
+
+      - if: ${{ steps.dist-cache.outputs.cache-hit != 'true' }}
+        name: Pull versions
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          for row in $(jq -rc '.[] | @base64' deploy-versions.json); do
+            _jq() {
+              echo ${row} | base64 --decode | jq -r ${1}
+            }
+            key=$(echo $(_jq '.key'));
+            tag=$(echo $(_jq '.tag'));
+
+            git clone --depth 1 -b "$tag" https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/aklivity/zillabase-docs.git "$BuildDir/$key"
+
+            cp versions.json "$BuildDir/$key/src/.vuepress/versions.json";
+          done
+
+      - if: ${{ steps.dist-cache.outputs.cache-hit != 'true' }}
+        name: Build versions
+        env:
+          NODE_OPTIONS: "--max_old_space_size=4096"
+        run: |
+          wrkdir=$(pwd);
+          echo "Current working directory: $wrkdir"
+          for row in $(jq -rc '.[] | @base64' deploy-versions.json); do
+            _jq() {
+              echo ${row} | base64 --decode | jq -r ${1}
+            }
+            key=$(echo $(_jq '.key'));
+
+            export DIST_DIR="$wrkdir/$DistDir";
+            export SITE_VERSION_KEY="$key";
+            echo "Setting DIST_DIR: $DIST_DIR"
+            echo "Setting SITE_VERSION_KEY: $SITE_VERSION_KEY"
+
+            mkdir -p "$DIST_DIR";
+            echo "Created directory: $DIST_DIR"
+
+            cd "$BuildDir/$key";
+            echo "Navigating to build directory for version $key: $BuildDir/$key"
+            pnpm install && pnpm build;
+
+            cd $wrkdir;
+          done
+
+      - name: Build VuePress site
+        env:
+          NODE_OPTIONS: "--max_old_space_size=4096"
+          SITE_VERSION_KEY: next
+        run: |
+          cp versions.json "src/.vuepress/versions.json";
+          echo "Setting DIST_DIR to $(pwd)/$DistDir"
+
+          export DIST_DIR="$(pwd)/$DistDir";
+          pnpm build
+
+      - if: ${{ steps.dist-cache.outputs.cache-hit != 'true' }}
+        name: Save Docs
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ env.DistDir }}
+          key: ${{ env.DistDir }}-${{ hashFiles('deploy-versions.json') }}
+
+      - name: Check Dist Directory
+        run: |
+          echo "Checking contents of DistDir: $(pwd)/${{ env.DistDir }}"
+          ls -la "$(pwd)/${{ env.DistDir }}"
+
+      - name: Upload cloudflare-pages artifact
+        if: github.repository_owner == 'aklivity'
+        uses: actions/upload-artifact@v4
+        with:
+          name: cloudflare-pages
+          path: ${{ env.DistDir }}
+
+      - name: Upload github-pages artifact
+        if: github.repository_owner != 'aklivity'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ${{ env.DistDir }}/zillabase-docs
+
+  deployCloudflarePages:
+    if: github.repository_owner == 'aklivity'
+    runs-on: ubuntu-latest
+    needs: build
+    permissions:
+      contents: read
+      deployments: write
+
+    environment:
+      name: cloudflare-pages
+      url: ${{ steps.cloudflare-deployment.outputs.url }}
+
+    steps:
+      - name: Download cloudflare-pages artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: cloudflare-pages
+          path: ${{ env.DistDir }}
+
+      - name: Move cloudflare files to root
+        run: mv ${{ env.DistDir }}/${{ env.SITE_BASE }}/next/cloudflare/* ${{ env.DistDir }}
+
+      - name: Publish to Cloudflare Pages
+        id: cloudflare-deployment
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: 65fb75109b09718cddae9ab7c68e2e3c
+          projectName: zillabase-docs
+          directory: ${{ env.DistDir }}
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+
+  deployGithubPages:
+    if: github.repository_owner != 'aklivity'
+    runs-on: ubuntu-latest
+    needs: build
+    permissions:
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.github-deployment.outputs.page_url }}next
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: github-deployment
+        uses: actions/deploy-pages@v4

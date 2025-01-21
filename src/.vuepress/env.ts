@@ -1,5 +1,5 @@
 
-export const siteBase = <string>process.env.SITE_BASE || "zillabase-docs";
+export const siteBase = <string>process.env.SITE_BASE || "zillabase";
 export const dist = <string>process.env.DIST_DIR || "src/.vuepress/dist";
 export const hostnameSEO = <string>process.env.SITE_URL || `https://docs.aklivity.io`;
 export const versionKey = <string>process.env.SITE_VERSION_KEY || "next";
